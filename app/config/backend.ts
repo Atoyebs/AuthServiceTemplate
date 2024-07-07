@@ -1,4 +1,3 @@
-// import ThirdPartyNode from "supertokens-node/recipe/thirdparty";
 import EmailPasswordNode from "supertokens-node/recipe/emailpassword";
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
