@@ -2,6 +2,10 @@ html {
   height: 100%;
 }
 
+.h-full {
+  height: 100vh;
+}
+
 .flex-col {
   display: flex;
   flex-direction: column;
@@ -18,4 +22,39 @@ html {
 
 .items-center {
   align-items: center;
+}
+
+input {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  width: 100%;
+  font-size: "2.5rem";
+  margin-bottom: 1rem;
+}
+
+button {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-radius: 2rem;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  width: 100%;
+  font-size: "2.5rem";
+  background-color: #4d3af5;
+  transition: all 0.5s;
+
+  &:hover {
+    background-color: #e8e8e8;
+    color: black;
+  }
+
+  &:disabled,
+  &[disabled] {
+    background-color: #afafaf;
+    color: white;
+    cursor: auto;
+  }
 }
