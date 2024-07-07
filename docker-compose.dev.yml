@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: "postgres:13-bullseye"
+    networks:
+      default:
+        aliases:
+          - ${POSTGRES_NETWORK_ALIAS}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  supertokens:
+    image: registry.supertokens.io/supertokens/supertokens-postgresql:9.0.2
+    ports:
+      - 3567:3567
+    environment:
+      POSTGRESQL_CONNECTION_URI: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_NETWORK_ALIAS}:${POSTGRES_CONTAINER_PORT}/${POSTGRES_DB}"
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+volumes:
+  auth_data:
