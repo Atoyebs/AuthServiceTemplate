@@ -6,27 +6,47 @@ services:
     networks:
       default:
         aliases:
-          - ${POSTGRES_NETWORK_ALIAS}
+          - ${NEXT_SERVER_POSTGRES_NETWORK_ALIAS}
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${NEXT_SERVER_DB_USER}
+      POSTGRES_PASSWORD: ${NEXT_SERVER_DB_PASS}
+      POSTGRES_DB: ${NEXT_SERVER_POSTGRES_DB}
     ports:
-      - ${POSTGRES_HOST_PORT}:${POSTGRES_CONTAINER_PORT}
+      - ${NEXT_SERVER_DB_PORT}:${NEXT_SERVER_DB_CONTAINER_PORT}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      test:
+        ["CMD", "pg_isready", "-U", "${NEXT_SERVER_DB_USER}", "-d", "${NEXT_SERVER_POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+  flyway:
+    image: redgate/flyway
+    container_name: flyway
+    environment:
+      FLYWAY_BASELINE_ON_MIGRATE: true
+      DB_HOST: ${NEXT_SERVER_POSTGRES_NETWORK_ALIAS}
+      DB_PORT: ${NEXT_SERVER_DB_CONTAINER_PORT}
+      DB_NAME: ${NEXT_SERVER_POSTGRES_DB}
+      DB_USER: ${NEXT_SERVER_DB_USER}
+      DB_PASS: ${NEXT_SERVER_DB_PASS}
+    command: migrate -user=${NEXT_SERVER_DB_USER} -password=${NEXT_SERVER_DB_PASS} -connectRetries=10
+    volumes:
+      - ./config/flyway:/flyway/conf
+      - ./config/flyway/migrations:/flyway/sql
+    depends_on:
+      - supertokens
 
   supertokens:
     image: registry.supertokens.io/supertokens/supertokens-postgresql:9.0.2
     ports:
       - 3567:3567
     environment:
-      POSTGRESQL_CONNECTION_URI: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_NETWORK_ALIAS}:${POSTGRES_CONTAINER_PORT}/${POSTGRES_DB}"
+      POSTGRESQL_CONNECTION_URI: "postgresql://${NEXT_SERVER_DB_USER}:${NEXT_SERVER_DB_PASS}@${NEXT_SERVER_POSTGRES_NETWORK_ALIAS}:${NEXT_SERVER_DB_CONTAINER_PORT}/${NEXT_SERVER_POSTGRES_DB}"
     restart: unless-stopped
+    volumes:
+      - auth_data:/var/lib/postgresql/data
     depends_on:
       - postgres
 
