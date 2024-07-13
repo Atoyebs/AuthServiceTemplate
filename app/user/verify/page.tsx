@@ -1,4 +1,5 @@
 import { ServerComponentProps } from "@/app/types";
+import Link from "next/link";
 import EmailVerification from 'supertokens-node/recipe/emailverification';
 
 
@@ -16,10 +17,11 @@ const VerifyPage = async (props: ServerComponentProps) => {
     </section>;
   }
 
-  return <section className="page-full justify-center items-center">
-    <div>Verify page</div>
+  return <section style={{ gap: '2rem' }} className="page-full justify-center items-center">
+    <h1>Verify page</h1>
     <div>Congratulations you've been successfully verified</div>
     <div>User data: {JSON.stringify(rest)}</div>
+    <span><Link href={"/login"}>Login</Link></span>
   </section>;
 }
 

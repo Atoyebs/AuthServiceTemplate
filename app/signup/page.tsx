@@ -55,7 +55,7 @@ const SignUp = () => {
            sign up successful. The session tokens are automatically handled by
            the frontend SDK.
         */
-        push("/user");
+        push("/user/client");
       }
     } catch (error) {
       console.error(`sign up error: `, error);

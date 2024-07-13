@@ -3,10 +3,11 @@ import EmailVerification from "supertokens-node/recipe/emailverification";
 import SessionNode from "supertokens-node/recipe/session";
 import Dashboard from "supertokens-node/recipe/dashboard";
 import UserRoles from "supertokens-node/recipe/userroles";
+import UserMetadata from "supertokens-node/recipe/usermetadata";
 import { appInfo } from "../appInfo";
 import { TypeInput } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
-import { signUpPOST, signInFunction, sendVerificationEmail } from "./functions";
+import { signUpPOST, signInFunction, sendVerificationEmail, createNewSession } from "./functions";
 
 const connectionURI = `${process.env.NEXT_SERVER_SUPERTOKENS_CONNECTION_URI!}`;
 
@@ -32,6 +33,10 @@ export let backendConfig = (): TypeInput => {
           functions: (originalImplementation) => {
             return {
               ...originalImplementation,
+              signUp(input) {
+                input.userContext.isSignUp = true;
+                return originalImplementation.signUp(input);
+              },
               //customize sign in functionality here
               signIn: (input) => signInFunction(input, originalImplementation),
             };
@@ -54,9 +59,19 @@ export let backendConfig = (): TypeInput => {
           ],
         },
       }),
-      SessionNode.init(),
+      SessionNode.init({
+        override: {
+          functions: (originalImplementation) => {
+            return {
+              ...originalImplementation,
+              createNewSession: (input) => createNewSession(input, originalImplementation),
+            };
+          },
+        },
+      }),
       Dashboard.init(),
       UserRoles.init(),
+      UserMetadata.init(),
       EmailVerification.init({
         mode: "REQUIRED",
         emailDelivery: {
@@ -77,10 +92,7 @@ export let backendConfig = (): TypeInput => {
 let initialized = false;
 export function ensureSuperTokensInit() {
   if (!initialized) {
-    console.log(`initialising supertokens afresh`);
     SuperTokens.init(backendConfig());
     initialized = true;
-  } else {
-    console.log(`supertokens already initialsed`);
   }
 }

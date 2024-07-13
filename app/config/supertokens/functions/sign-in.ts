@@ -9,8 +9,7 @@ export async function signInFunction(
 ) {
   try {
     const response = await originalImplementation.signIn(input);
-
-    console.log("input in login ==> ", input);
+    input.userContext.isSignUp = false;
 
     return response;
   } catch (error) {

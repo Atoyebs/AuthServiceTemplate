@@ -1,5 +1,6 @@
 import EmailPasswordNode from "supertokens-node/recipe/emailpassword";
 import EmailVerification from "supertokens-node/recipe/emailverification";
+import UserMetadata from "supertokens-node/recipe/usermetadata";
 import { FormFields, STSignUpPOSTInput } from "@/app/types";
 import { arrayToObjectWithKeys } from "../../../utility";
 import { updateUserContext } from "../../utils";
@@ -21,6 +22,13 @@ export async function signUpPOST(
   const db = new Database();
   await db.UserBasicData().insert({ user_id: response.user.id, firstname, lastname, username });
   input.userContext = updateUserContext(input.userContext, formFieldsObject);
+  input.userContext.isSignUp = true;
+
+  await UserMetadata.updateUserMetadata(
+    response.user.id,
+    { firstname, lastname, username },
+    input.userContext
+  );
 
   if (wasUserSuccessfullyCreated) {
     await EmailVerification.sendEmailVerificationEmail(
