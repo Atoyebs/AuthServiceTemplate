@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signUp } from "supertokens-web-js/recipe/emailpassword";
+import { useRouter } from "next/navigation";
+import { useSessionHandler } from "../hooks/session-handler";
 
 const TUTORIAL_URL =
   "https://supertokens.com/docs/thirdpartyemailpassword/custom-ui/email-password-login";
@@ -12,6 +14,14 @@ const SignUp = () => {
   const [lastname, setLastname] = useState("Atoyebi");
   const [email, setEmail] = useState("volajel538@apn7.com");
   const [password, setPassword] = useState("");
+
+  const { push } = useRouter()
+
+  const { isLoading: isLoadingSession, doesSessionExist } = useSessionHandler({
+    onSessionFoundRedirect: () => {
+      push("/user/client");
+    }
+  });
 
 
   const onSignUp = async () => {
@@ -52,7 +62,7 @@ const SignUp = () => {
            sign up successful. The session tokens are automatically handled by
            the frontend SDK.
         */
-
+        alert(`Signup successful! Please verify your account!`)
       }
     } catch (error) {
       console.error(`sign up error: `, error);
@@ -62,11 +72,27 @@ const SignUp = () => {
     setIsLoading(false);
   };
 
+  if (isLoadingSession) {
+    return (
+      <section className="page-full justify-center items-center">
+        <h1>Loading . . .</h1>
+      </section>
+    );
+  }
+
+  if (doesSessionExist) {
+    return (
+      <section className="page-full justify-center items-center">
+        <h1>Already logged in. Re-routing to user page</h1>
+      </section>
+    )
+  }
+
   return (
     <section className="flex flex-col justify-center items-center h-full">
       <h1 style={{ marginBottom: "3rem" }}>Sign Up (Demo) </h1>
 
-      <div style={{ gap: "1rem", width: "25vw" }} className="flex-col justify-center items-center">
+      <div style={{ gap: "1rem", width: "30vw" }} className="flex-col justify-center items-center">
         <input
           placeholder="firstname"
           value={firstname}

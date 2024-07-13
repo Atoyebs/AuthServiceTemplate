@@ -2,6 +2,8 @@
 import { useState } from "react"
 import EmailPassword from "supertokens-web-js/recipe/emailpassword";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSessionHandler } from "../hooks/session-handler";
 
 const Login = () => {
 
@@ -10,6 +12,14 @@ const Login = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
+
+  const { push } = useRouter();
+
+  const { isLoading: isLoadingSession, doesSessionExist } = useSessionHandler({
+    onSessionFoundRedirect: () => {
+      push("/user/client");
+    }
+  });
 
   const onLogin = async () => {
     setIsLoading(true);
@@ -32,6 +42,21 @@ const Login = () => {
     }
   }
 
+  if (isLoadingSession) {
+    return (
+      <section className="page-full justify-center items-center">
+        <h1>Loading . . .</h1>
+      </section>
+    );
+  }
+
+  if (doesSessionExist) {
+    return (
+      <section className="page-full justify-center items-center">
+        <h1>Already logged in. Re-routing to user page</h1>
+      </section>
+    );
+  }
 
   return <section className="page-full justify-center items-center">
     <h1>Login Page</h1>
