@@ -43,3 +43,30 @@ export type FormFields = {
   password: string;
   username?: string;
 };
+
+export interface STAccessTokenPayload {
+  iat: number;
+  exp: number;
+  sub: string;
+  tId: string;
+  rsub: string;
+  sessionHandle: string;
+  refreshTokenHash1: string;
+  parentRefreshTokenHash1: null | string;
+  antiCsrfToken: null | string;
+  iss: string;
+  "st-role": { v: any[]; t: number };
+  "st-perm": { v: any[]; t: number };
+  "st-ev": { v: boolean; t: number };
+  firstname: string;
+  lastname: string;
+  email: string;
+  status: string;
+}
+
+export type SessionInfo = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  userId: string;
+};

@@ -2,8 +2,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signUp } from "supertokens-web-js/recipe/emailpassword";
-import { sendVerificationEmail } from "supertokens-web-js/recipe/emailverification";
-import { useRouter } from "next/navigation";
 
 const TUTORIAL_URL =
   "https://supertokens.com/docs/thirdpartyemailpassword/custom-ui/email-password-login";
@@ -15,7 +13,6 @@ const SignUp = () => {
   const [email, setEmail] = useState("volajel538@apn7.com");
   const [password, setPassword] = useState("");
 
-  const { push } = useRouter();
 
   const onSignUp = async () => {
     setIsLoading(true);
@@ -55,7 +52,7 @@ const SignUp = () => {
            sign up successful. The session tokens are automatically handled by
            the frontend SDK.
         */
-        push("/user/client");
+
       }
     } catch (error) {
       console.error(`sign up error: `, error);

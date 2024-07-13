@@ -8,49 +8,19 @@ export async function createNewSession(
   originalImplementation: SessionNode.RecipeInterface
 ) {
   try {
-    if (input.userContext.isSignUp) {
-      /**
-       * The execution will come here only in case
-       * a sign up API is calling this function. This is because
-       * only then will the input.userContext.isSignUp === true
-       * (see above code).
-       */
-      console.log(`\n\nAbout to create empty session\n\n`);
-      return {
-        // this is an empty session. It won't result in a session being created for the user.
-        getAccessToken: () => "",
-        getAccessTokenPayload: () => null,
-        getExpiry: async () => -1,
-        getHandle: () => "",
-        getSessionDataFromDatabase: async () => null,
-        getTimeCreated: async () => -1,
-        getUserId: () => "",
-        revokeSession: async () => {},
-        updateSessionDataInDatabase: async () => {},
-        mergeIntoAccessTokenPayload: async () => {},
-        assertClaims: async () => {},
-        fetchAndSetClaim: async () => {},
-        getClaimValue: async () => undefined,
-        setClaimValue: async () => {},
-        removeClaim: async () => {},
-        attachToRequestResponse: () => {},
-        getAllSessionTokensDangerously: () => ({
-          accessAndFrontTokenUpdated: false,
-          accessToken: "",
-          frontToken: "",
-          antiCsrfToken: undefined,
-          refreshToken: undefined,
-        }),
-        getTenantId: () => "public",
-        getRecipeUserId: () => SuperTokens.convertToRecipeUserId(""),
-      };
-    }
+    const usermetadata = await UserMetadata.getUserMetadata(input.userId, input.userContext);
+    const metadata = { ...usermetadata.metadata };
+    console.log(`usermetadata = `, metadata);
+
+    input.accessTokenPayload = {
+      ...input.accessTokenPayload,
+      ...metadata,
+      email: input.userContext?.email || "",
+    };
+
+    console.log(`input accessTokenPayload = `, input.accessTokenPayload);
 
     const session = await originalImplementation.createNewSession(input);
-
-    const usermetadata = await UserMetadata.getUserMetadata(input.userId, input.userContext);
-
-    await session.updateSessionDataInDatabase(usermetadata, input.userContext);
 
     return session;
   } catch (error) {

@@ -1,7 +1,5 @@
 import EmailPasswordNode from "supertokens-node/recipe/emailpassword";
-import { FormFields, STLoginFunctionInput, STSignUpPOSTInput } from "@/app/types";
-import { arrayToObjectWithKeys } from "../../../utility";
-import { updateUserContext } from "../../utils";
+import { STLoginFunctionInput } from "@/app/types";
 
 export async function signInFunction(
   input: STLoginFunctionInput,
@@ -10,6 +8,7 @@ export async function signInFunction(
   try {
     const response = await originalImplementation.signIn(input);
     input.userContext.isSignUp = false;
+    input.userContext.email = input.email;
 
     return response;
   } catch (error) {

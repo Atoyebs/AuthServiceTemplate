@@ -4,12 +4,9 @@ import { SessionContainer } from "supertokens-node/recipe/session";
 import { withSession } from "supertokens-node/nextjs";
 import { ensureSuperTokensInit } from "./app/config/supertokens/backend";
 
-console.log("middleware file invoked");
-// ensureSuperTokensInit();
+ensureSuperTokensInit();
 
 export async function middleware(request: NextRequest & { session?: SessionContainer }) {
-  console.log("middleware HIT!", request.nextUrl.pathname);
-
   if (request.headers.has("x-user-id")) {
     console.warn(
       "The FE tried to pass x-user-id, which is only supposed to be a backend internal header. Ignoring."

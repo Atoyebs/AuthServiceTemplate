@@ -1,4 +1,4 @@
-import { ensureSuperTokensInit } from "@/app/config/backend";
+import { ensureSuperTokensInit } from "@/app/config/supertokens/backend";
 import { NextResponse, NextRequest } from "next/server";
 import { withSession } from "supertokens-node/nextjs";
 
@@ -14,7 +14,6 @@ export function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      note: "Fetch any data from your application for authenticated user after using verifySession middleware",
       userId: session.getUserId(),
       sessionHandle: session.getHandle(),
       accessTokenPayload: session.getAccessTokenPayload(),
