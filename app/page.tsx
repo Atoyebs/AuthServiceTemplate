@@ -1,7 +1,9 @@
 import Link from "next/link";
 import styles from "./page.module.scss";
+import { redirect } from 'next/navigation';
+import { getSSRSessionHelper } from "./utility/sessions";
 
-export default function Home() {
+export default async function Home() {
 
     return (
         <main className={styles.main}>
@@ -13,4 +15,6 @@ export default function Home() {
             </div>
         </main>
     );
+
+
 }

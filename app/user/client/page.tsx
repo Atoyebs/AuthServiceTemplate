@@ -2,6 +2,7 @@
 
 import { useSessionHandler } from "@/app/hooks/session-handler";
 import EmailPassword from "supertokens-web-js/recipe/emailpassword";
+import Session from "supertokens-web-js/recipe/session";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -32,8 +33,10 @@ const UserClient = () => {
         </h1>
         <span style={{ marginBottom: "2rem" }}>
           <Link
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault();
               await EmailPassword.signOut();
+              await Session.signOut();
               push("/");
             }}
             href={"#"}
