@@ -1,7 +1,7 @@
 export const appInfo = {
-    appName: "SuperTokens Next.js demo app",
-    apiDomain: "http://localhost:3000",
-    websiteDomain: "http://localhost:3000",
-    apiBasePath: "/api/auth",
-    websiteBasePath: "/auth",
+  appName: "Template App",
+  apiDomain: process.env.NEXT_SERVER_API_DOMAIN!,
+  websiteDomain: process.env.NEXT_SERVER_WEBSITE_DOMAIN!,
+  apiBasePath: process.env.NEXT_SERVER_API_BASE_PATH!,
+  websiteBasePath: process.env.NEXT_SERVER_WEBSITE_BASE_PATH!,
 };
