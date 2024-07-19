@@ -19,23 +19,32 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     return NextResponse.next();
   }
 
-  return withSession(request, async (err, session) => {
-    if (err) {
-      return NextResponse.json(err, { status: 500 });
-    }
-    if (session === undefined) {
-      return NextResponse.next();
-    }
-    return NextResponse.next({
-      headers: {
-        "x-user-id": session.getUserId(),
-      },
-    });
-  });
+  return withSession(
+    request,
+    async (err, session) => {
+      if (err) {
+        return NextResponse.json(err, { status: 500 });
+      }
+      if (session === undefined) {
+        // return NextResponse.next();
+        if (request.nextUrl.pathname.startsWith("/user")) {
+          return NextResponse.redirect(new URL("/login", request.url));
+        }
+
+        return NextResponse.next();
+      }
+      return NextResponse.next({
+        headers: {
+          "x-user-id": session.getUserId(),
+        },
+      });
+    },
+    { sessionRequired: false }
+  );
 }
 
 export const config = {
-  matcher: "/api/:path*",
+  matcher: ["/api/:path*", "/user/:path*"],
   unstable_allowDynamic: [
     "/node_modules/lodash/**",
     "/node_modules/lodash*/**",

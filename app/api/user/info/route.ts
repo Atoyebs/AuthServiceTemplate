@@ -4,7 +4,9 @@ import { withSession } from "supertokens-node/nextjs";
 
 ensureSuperTokensInit();
 
-export function GET(request: NextRequest) {
+export function POST(request: NextRequest) {
+  console.log(`entered user/info route handler`);
+
   return withSession(request, async (err, session) => {
     if (err) {
       return NextResponse.json(err, { status: 500 });

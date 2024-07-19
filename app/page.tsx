@@ -1,7 +1,5 @@
 import Link from "next/link";
 import styles from "./page.module.scss";
-import { redirect } from 'next/navigation';
-import { getSSRSessionHelper } from "./utility/sessions";
 
 export default async function Home() {
 
