@@ -10,10 +10,6 @@ const UserServer = async () => {
 
   const sAccessToken = cookies().get('sAccessToken')?.value || "";
 
-  if (!sAccessToken) {
-    redirect('/login')
-  }
-
   const session = await Session.getSessionWithoutRequestResponse(sAccessToken);
   const sessionInfo = session.getAccessTokenPayload()
 

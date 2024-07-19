@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Session from "supertokens-web-js/recipe/session";
-import EmailPassword from "supertokens-web-js/recipe/emailpassword";
 
 export const LoginMenuItems = () => {
 

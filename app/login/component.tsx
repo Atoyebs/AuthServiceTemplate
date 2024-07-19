@@ -31,11 +31,7 @@ export const
         if (response.status === "OK") {
           setIsEnabled(false);
           alert("Login Successful. Click on a user page link to test route protection");
-          revalidatePath("/user/server");
-          revalidatePath("/login")
-          setTimeout(() => {
-            push("/user/server");
-          }, 1000);
+          window.location.href = "/user/server";
         }
       } catch (err) {
         console.log(err);
