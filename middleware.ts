@@ -7,6 +7,9 @@ import { ensureSuperTokensInit } from "./app/config/supertokens/backend";
 ensureSuperTokensInit();
 
 export async function middleware(request: NextRequest & { session?: SessionContainer }) {
+  const isUserProtectedPage = request.nextUrl.pathname.startsWith("/user");
+  const isAuthApiRoute = request.nextUrl.pathname.startsWith("/api/auth");
+
   if (request.headers.has("x-user-id")) {
     console.warn(
       "The FE tried to pass x-user-id, which is only supposed to be a backend internal header. Ignoring."
@@ -14,7 +17,7 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     request.headers.delete("x-user-id");
   }
 
-  if (request.nextUrl.pathname.startsWith("/api/auth")) {
+  if (isAuthApiRoute) {
     // this hits our app/api/auth/* endpoints
     return NextResponse.next();
   }
@@ -27,7 +30,7 @@ export async function middleware(request: NextRequest & { session?: SessionConta
       }
       if (session === undefined) {
         // return NextResponse.next();
-        if (request.nextUrl.pathname.startsWith("/user")) {
+        if (isUserProtectedPage) {
           return NextResponse.redirect(new URL("/login", request.url));
         }
 
