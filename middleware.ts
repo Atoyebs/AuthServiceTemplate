@@ -30,7 +30,6 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     const bearerToken = getBearerToken(request);
     //if the bearer token is not present, return an error of missing token
     if (!bearerToken) {
-      console.log(`\n\nNo bearer token provided: `, bearerToken);
       return NextResponse.json({ success: false, message: "Missing Token" }, { status: 400 });
     }
 
@@ -43,7 +42,6 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     console.log(`payload = `, payload);
 
     if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {
-      console.log(`\n\nToken decoding failed: `);
       return NextResponse.json({ success: false, message: "Unauthorized Access" }, { status: 401 });
     }
 
