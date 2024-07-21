@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "link:local": "rm -rf node_modules/supertokens-js-override && npm link supertokens-jwt-helper",
     "docker:dev": "docker-compose --env-file .env.development -f docker-compose.dev.yml up -d"
   },
   "dependencies": {
