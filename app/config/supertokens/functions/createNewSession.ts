@@ -12,6 +12,7 @@ export async function createNewSession(
     const metadata = { ...usermetadata.metadata };
     console.log(`usermetadata = `, metadata);
 
+    //TODO: make sure email is being passed into access token payload
     input.accessTokenPayload = {
       ...input.accessTokenPayload,
       ...metadata,

@@ -6,7 +6,6 @@ import { ensureSuperTokensInit } from "./config/supertokens/backend";
 
 const inter = Inter({ subsets: ["latin"] });
 
-ensureSuperTokensInit();
 
 export const metadata: Metadata = {
     title: "SuperTokens 💫",

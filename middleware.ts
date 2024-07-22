@@ -5,11 +5,24 @@ import { withSession } from "supertokens-node/nextjs";
 import { ensureSuperTokensInit } from "./app/config/supertokens/backend";
 import { getBearerToken } from "./app/utility/request";
 import { EnvHandler, JWTHandler } from "supertokens-jwt-helper";
-import jwkToPem, { JWK } from "jwk-to-pem";
 
 ensureSuperTokensInit();
 
 export async function middleware(request: NextRequest & { session?: SessionContainer }) {
+  const res = NextResponse.next();
+
+  const origin = request.headers.get("origin");
+
+  console.log(`origin = `, origin);
+
+  res.headers.append("Access-Control-Allow-Credentials", "true");
+  res.headers.append("Access-Control-Allow-Origin", origin!); // replace this your actual origin
+  res.headers.append("Access-Control-Allow-Methods", "GET,OPTIONS,DELETE,PATCH,POST,PUT");
+  res.headers.append(
+    "Access-Control-Allow-Headers",
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, fdi-version, st-auth-mode, rid"
+  );
+
   const isUserProtectedPage = request.nextUrl.pathname.startsWith("/user");
   const isAuthApiRoute = request.nextUrl.pathname.startsWith("/api/auth");
   const isServiceApiRoute = request.nextUrl.pathname.startsWith("/api/service");
@@ -23,7 +36,7 @@ export async function middleware(request: NextRequest & { session?: SessionConta
 
   if (isAuthApiRoute) {
     // this hits our app/api/auth/* endpoints
-    return NextResponse.next();
+    return res;
   }
 
   if (isServiceApiRoute) {
@@ -39,13 +52,11 @@ export async function middleware(request: NextRequest & { session?: SessionConta
 
     const payload = decodedJwt.payload;
 
-    console.log(`payload = `, payload);
-
     if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {
       return NextResponse.json({ success: false, message: "Unauthorized Access" }, { status: 401 });
     }
 
-    return NextResponse.next();
+    return res;
   }
 
   return withSession(
@@ -60,13 +71,10 @@ export async function middleware(request: NextRequest & { session?: SessionConta
           return NextResponse.redirect(new URL("/login", request.url));
         }
 
-        return NextResponse.next();
+        return res;
       }
-      return NextResponse.next({
-        headers: {
-          "x-user-id": session.getUserId(),
-        },
-      });
+      res.headers.set("x-user-id", session.getUserId());
+      return res;
     },
     { sessionRequired: false }
   );
