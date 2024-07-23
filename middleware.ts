@@ -49,7 +49,6 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     EnvHandler.getInstance().setEnvs(process.env);
     const handler = JWTHandler.getInstance();
     const [decodedJwt, wasSuccessfullyDecoded] = await handler.decodeJWT(bearerToken);
-    console.log(`\n\ndecodedJwt = `, decodedJwt);
     const payload = decodedJwt.payload;
 
     if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {
