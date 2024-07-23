@@ -8,7 +8,6 @@ import { revalidatePath } from "next/cache";
 export const
   LoginClientComponent = () => {
 
-
     const { push } = useRouter();
 
     const [email, setEmail] = useState("");

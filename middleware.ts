@@ -13,8 +13,6 @@ export async function middleware(request: NextRequest & { session?: SessionConta
 
   const origin = request.headers.get("origin");
 
-  console.log(`origin = `, origin);
-
   res.headers.append("Access-Control-Allow-Credentials", "true");
   res.headers.append("Access-Control-Allow-Origin", origin!); // replace this your actual origin
   res.headers.append("Access-Control-Allow-Methods", "GET,OPTIONS,DELETE,PATCH,POST,PUT");
@@ -26,6 +24,7 @@ export async function middleware(request: NextRequest & { session?: SessionConta
   const isUserProtectedPage = request.nextUrl.pathname.startsWith("/user");
   const isAuthApiRoute = request.nextUrl.pathname.startsWith("/api/auth");
   const isServiceApiRoute = request.nextUrl.pathname.startsWith("/api/service");
+  const isUserApiRoute = request.nextUrl.pathname.startsWith("/api/user");
 
   if (request.headers.has("x-user-id")) {
     console.warn(
@@ -39,8 +38,9 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     return res;
   }
 
-  if (isServiceApiRoute) {
+  if (isServiceApiRoute || isUserApiRoute) {
     const bearerToken = getBearerToken(request);
+
     //if the bearer token is not present, return an error of missing token
     if (!bearerToken) {
       return NextResponse.json({ success: false, message: "Missing Token" }, { status: 400 });
@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     EnvHandler.getInstance().setEnvs(process.env);
     const handler = JWTHandler.getInstance();
     const [decodedJwt, wasSuccessfullyDecoded] = await handler.decodeJWT(bearerToken);
-
+    console.log(`\n\ndecodedJwt = `, decodedJwt);
     const payload = decodedJwt.payload;
 
     if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {

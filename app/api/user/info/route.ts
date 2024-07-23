@@ -1,24 +1,30 @@
 import { ensureSuperTokensInit } from "@/app/config/supertokens/backend";
-import { NextResponse, NextRequest } from "next/server";
-import { withSession } from "supertokens-node/nextjs";
+import { NextRequest, NextResponse } from "next/server";
+import Session from "supertokens-node/recipe/session";
 
 ensureSuperTokensInit();
 
-export function POST(request: NextRequest) {
-  console.log(`entered user/info route handler`);
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const token = body.token;
 
-  return withSession(request, async (err, session) => {
-    if (err) {
-      return NextResponse.json(err, { status: 500 });
-    }
+  // console.log(`token in /user/info = `, token);
+
+  if (!token) {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const session = await Session.getSessionWithoutRequestResponse(token);
+    console.log(`session in /user/info = `, session);
     if (!session) {
-      return new NextResponse("Authentication required", { status: 401 });
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
-    return NextResponse.json({
-      userId: session.getUserId(),
-      sessionHandle: session.getHandle(),
-      accessTokenPayload: session.getAccessTokenPayload(),
-    });
-  });
+    const sessionInfo = session.getAccessTokenPayload();
+    return NextResponse.json({ success: true, data: sessionInfo }, { status: 200 });
+  } catch (error) {
+    console.log(`error in /user/info = `, error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+  }
 }

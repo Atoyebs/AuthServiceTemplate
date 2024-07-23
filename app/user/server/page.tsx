@@ -1,7 +1,6 @@
 import { ensureSuperTokensInit } from "@/app/config/supertokens/backend";
 import { LoginMenuItems } from "@/app/login/menu-items";
 import { cookies } from "next/headers";
-import { redirect } from 'next/navigation';
 import Session from "supertokens-node/recipe/session";
 
 ensureSuperTokensInit();
