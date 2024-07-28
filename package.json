@@ -25,6 +25,7 @@
     "react-dom": "^18",
     "sass": "^1.77.6",
     "supertokens-auth-react": "^0.43.0",
+    "supertokens-jwt-helper": "github:Atoyebs/SupertokensJWTHelper",
     "supertokens-node": "^18.0.1",
     "supertokens-web-js": "^0.12.0"
   },
