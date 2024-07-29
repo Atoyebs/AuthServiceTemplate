@@ -10,16 +10,16 @@ export async function createNewSession(
   try {
     const usermetadata = await UserMetadata.getUserMetadata(input.userId, input.userContext);
     const metadata = { ...usermetadata.metadata };
-    console.log(`usermetadata = `, metadata);
+
+    console.log("input in createNewSession ==> ", input);
 
     //TODO: make sure email is being passed into access token payload
     input.accessTokenPayload = {
       ...input.accessTokenPayload,
       ...metadata,
-      email: input.userContext?.email || "",
+      email: input.userContext.email || "",
+      userId: input.userId,
     };
-
-    console.log(`input accessTokenPayload = `, input.accessTokenPayload);
 
     const session = await originalImplementation.createNewSession(input);
 

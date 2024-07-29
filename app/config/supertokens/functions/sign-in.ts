@@ -8,6 +8,8 @@ export async function signInFunction(
   try {
     const response = await originalImplementation.signIn(input);
     input.userContext.isSignUp = false;
+
+    console.log("input.email in signInFunction ==> ", input.email);
     input.userContext.email = input.email;
 
     return response;
