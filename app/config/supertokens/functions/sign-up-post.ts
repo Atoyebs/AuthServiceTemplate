@@ -17,12 +17,20 @@ export async function signUpPOST(
 
   if (!wasUserSuccessfullyCreated) return response;
 
+  console.log(`\n\nUser was successfully created: \n\n`);
+
   const formFieldsObject = arrayToObjectWithKeys("id", "value", input.formFields) as FormFields;
   const { firstname, lastname, username } = formFieldsObject;
-  // const db = new Database();
-  // await db.UserBasicData().insert({ user_id: response.user.id, firstname, lastname, username });
   input.userContext = updateUserContext(input.userContext, formFieldsObject);
   input.userContext.isSignUp = true;
+
+  console.log("firstname, lastname, username", {
+    firstname,
+    lastname,
+    username,
+  });
+
+  console.log();
 
   await UserMetadata.updateUserMetadata(
     response.user.id,

@@ -23,8 +23,6 @@ export async function middleware(request: NextRequest & { session?: SessionConta
 
   const isUserProtectedPage = request.nextUrl.pathname.startsWith("/user");
   const isAuthApiRoute = request.nextUrl.pathname.startsWith("/api/auth");
-  const isServiceApiRoute = request.nextUrl.pathname.startsWith("/api/service");
-  const isUserApiRoute = request.nextUrl.pathname.startsWith("/api/user");
 
   if (request.headers.has("x-user-id")) {
     console.warn(
@@ -38,25 +36,25 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     return res;
   }
 
-  if (isServiceApiRoute || isUserApiRoute) {
-    const bearerToken = getBearerToken(request);
+  // if (isServiceApiRoute || isUserApiRoute) {
+  //   const bearerToken = getBearerToken(request);
 
-    //if the bearer token is not present, return an error of missing token
-    if (!bearerToken) {
-      return NextResponse.json({ success: false, message: "Missing Token" }, { status: 400 });
-    }
+  //   //if the bearer token is not present, return an error of missing token
+  //   if (!bearerToken) {
+  //     return NextResponse.json({ success: false, message: "Missing Token" }, { status: 400 });
+  //   }
 
-    EnvHandler.getInstance().setEnvs(process.env);
-    const handler = JWTHandler.getInstance();
-    const [decodedJwt, wasSuccessfullyDecoded] = await handler.decodeJWT(bearerToken);
-    const payload = decodedJwt.payload;
+  //   EnvHandler.getInstance().setEnvs(process.env);
+  //   const handler = JWTHandler.getInstance();
+  //   const [decodedJwt, wasSuccessfullyDecoded] = await handler.decodeJWT(bearerToken);
+  //   const payload = decodedJwt.payload;
 
-    if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {
-      return NextResponse.json({ success: false, message: "Unauthorized Access" }, { status: 401 });
-    }
+  //   if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {
+  //     return NextResponse.json({ success: false, message: "Unauthorized Access" }, { status: 401 });
+  //   }
 
-    return res;
-  }
+  //   return res;
+  // }
 
   return withSession(
     request,
