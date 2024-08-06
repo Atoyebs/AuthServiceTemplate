@@ -3,8 +3,6 @@ import type { NextRequest } from "next/server";
 import { SessionContainer } from "supertokens-node/recipe/session";
 import { withSession } from "supertokens-node/nextjs";
 import { ensureSuperTokensInit } from "./app/config/supertokens/backend";
-import { getBearerToken } from "./app/utility/request";
-import { EnvHandler, JWTHandler } from "supertokens-jwt-helper";
 
 ensureSuperTokensInit();
 
@@ -35,26 +33,6 @@ export async function middleware(request: NextRequest & { session?: SessionConta
     // this hits our app/api/auth/* endpoints
     return res;
   }
-
-  // if (isServiceApiRoute || isUserApiRoute) {
-  //   const bearerToken = getBearerToken(request);
-
-  //   //if the bearer token is not present, return an error of missing token
-  //   if (!bearerToken) {
-  //     return NextResponse.json({ success: false, message: "Missing Token" }, { status: 400 });
-  //   }
-
-  //   EnvHandler.getInstance().setEnvs(process.env);
-  //   const handler = JWTHandler.getInstance();
-  //   const [decodedJwt, wasSuccessfullyDecoded] = await handler.decodeJWT(bearerToken);
-  //   const payload = decodedJwt.payload;
-
-  //   if (!wasSuccessfullyDecoded || payload?.source !== "microservice") {
-  //     return NextResponse.json({ success: false, message: "Unauthorized Access" }, { status: 401 });
-  //   }
-
-  //   return res;
-  // }
 
   return withSession(
     request,

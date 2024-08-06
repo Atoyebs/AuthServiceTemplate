@@ -4,7 +4,7 @@ import UserMetadata from "supertokens-node/recipe/usermetadata";
 import { FormFields, STSignUpPOSTInput } from "@/app/types";
 import { arrayToObjectWithKeys } from "../../../utility";
 import { updateUserContext } from "../../utils";
-// import Database from "@/app/utility/database";
+import { connect, JSONCodec } from "nats";
 
 export async function signUpPOST(
   input: STSignUpPOSTInput,
@@ -20,17 +20,26 @@ export async function signUpPOST(
   console.log(`\n\nUser was successfully created: \n\n`);
 
   const formFieldsObject = arrayToObjectWithKeys("id", "value", input.formFields) as FormFields;
-  const { firstname, lastname, username } = formFieldsObject;
+  const { firstname, lastname, username, email } = formFieldsObject;
   input.userContext = updateUserContext(input.userContext, formFieldsObject);
   input.userContext.isSignUp = true;
 
-  console.log("firstname, lastname, username", {
-    firstname,
-    lastname,
-    username,
-  });
+  const jsonCodec = JSONCodec();
 
-  console.log();
+  const nc = await connect({ servers: process.env.NEXT_SERVER_NATS_SERVER_URL! });
+
+  nc.publish(
+    process.env.NEXT_SERVER_NATS_AUTH_TOPIC!,
+    jsonCodec.encode({
+      eventType: "kasefile.auth.signup",
+      data: {
+        email,
+        userId: response.user.id,
+        firstname,
+        lastname,
+      },
+    })
+  );
 
   await UserMetadata.updateUserMetadata(
     response.user.id,
