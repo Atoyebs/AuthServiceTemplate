@@ -1,11 +1,11 @@
 # Use the same base image as specified in your docker-compose file
-FROM node:20.16.0-alpine
+FROM node:20.16.0-alpine AS build
 
 # Set the working directory inside the container
 WORKDIR /app
 
 # Copy the local application code to the container
-COPY . /app
+COPY . .
 
 # Set environment variables (Note: these will need to be set at runtime)
 #NEXT_SERVER_WEBSITE_DOMAIN
@@ -29,6 +29,20 @@ COPY . /app
 
 # Install dependencies
 RUN npm install
+
+RUN npm run build
+
+RUN ls -ltr
+
+RUN rm -rf app assets public .env .env.development middleware.ts
+
+FROM node:20.16.0-alpine
+
+WORKDIR /app
+
+COPY --from=build /app .
+
+EXPOSE 3000
 
 # Define the command to run your application
 CMD ["npm", "run", "start"]
