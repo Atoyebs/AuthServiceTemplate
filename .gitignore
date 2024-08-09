@@ -40,3 +40,7 @@ next-env.d.ts
 
 #Data stored locally
 ./data/db/*
+
+#Logs
+logs
+*.log

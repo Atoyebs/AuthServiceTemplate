@@ -1,0 +1,7 @@
+node_modules
+logs
+.vscode
+.husky
+.next
+.eslintrc.json
+README.md

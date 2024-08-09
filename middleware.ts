@@ -57,9 +57,5 @@ export async function middleware(request: NextRequest & { session?: SessionConta
 
 export const config = {
   matcher: ["/api/:path*", "/user/:path*"],
-  unstable_allowDynamic: [
-    "/node_modules/lodash/**",
-    "/node_modules/lodash*/**",
-    "/node_modules/pg-promise/**",
-  ],
+  unstable_allowDynamic: ["/node_modules/lodash/**", "/node_modules/lodash*/**"],
 };
