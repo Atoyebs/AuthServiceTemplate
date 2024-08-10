@@ -13,6 +13,7 @@ const connectionURI = `${process.env.NEXT_SERVER_SUPERTOKENS_CONNECTION_URI!}`;
 const cookieSameSite = process.env.NEXT_SERVER_API_DOMAIN!.includes("localhost")
   ? "none"
   : "strict";
+const cookieSecure = cookieSameSite === "strict";
 
 console.log(`cookieSameSite configuration == `, cookieSameSite);
 
@@ -68,6 +69,7 @@ export let backendConfig = (): TypeInput => {
       }),
       SessionNode.init({
         cookieSameSite,
+        cookieSecure,
         override: {
           functions: (originalImplementation) => {
             return {
