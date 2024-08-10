@@ -10,6 +10,11 @@ import SuperTokens from "supertokens-node";
 import { signUpPOST, signInFunction, sendVerificationEmail, createNewSession } from "./functions";
 
 const connectionURI = `${process.env.NEXT_SERVER_SUPERTOKENS_CONNECTION_URI!}`;
+const cookieSameSite = process.env.NEXT_SERVER_API_DOMAIN!.includes("localhost")
+  ? "none"
+  : "strict";
+
+console.log(`cookieSameSite configuration == `, cookieSameSite);
 
 export let backendConfig = (): TypeInput => {
   return {
@@ -62,7 +67,7 @@ export let backendConfig = (): TypeInput => {
         },
       }),
       SessionNode.init({
-        cookieSameSite: process.env.NODE_ENV === "production" ? "strict" : "none",
+        cookieSameSite,
         override: {
           functions: (originalImplementation) => {
             return {
