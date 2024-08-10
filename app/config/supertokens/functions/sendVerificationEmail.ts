@@ -12,7 +12,7 @@ export const sendVerificationEmail = (
   return originalImplementation.sendEmail({
     ...input,
     emailVerifyLink: input.emailVerifyLink.replace(
-      `${process.env.NEXT_SERVER_VERIFICAION_BASE_URL}${process.env?.NEXT_SERVER_WEBSITE_BASE_PATH}/verify-email`,
+      `${process.env.NEXT_SERVER_WEBSITE_DOMAIN}${process.env?.NEXT_SERVER_WEBSITE_BASE_PATH}/verify-email`,
       `${process.env.NEXT_SERVER_VERIFICAION_BASE_URL}/${process.env.NEXT_SERVER_WEBSITE_VERIFICATION_PAGE_PATH}`
     ),
   });
