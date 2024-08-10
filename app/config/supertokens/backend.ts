@@ -15,7 +15,9 @@ const cookieSameSite = process.env.NEXT_SERVER_API_DOMAIN!.includes("localhost")
   : "strict";
 const cookieSecure = cookieSameSite === "strict";
 
-console.log(`cookieSameSite configuration == `, cookieSameSite);
+console.log(
+  `cookieSameSite (${cookieSameSite}) | cookieSecure (${cookieSecure}) configuration == `
+);
 
 export let backendConfig = (): TypeInput => {
   return {
@@ -68,7 +70,7 @@ export let backendConfig = (): TypeInput => {
         },
       }),
       SessionNode.init({
-        cookieSameSite,
+        cookieSameSite: "strict",
         cookieSecure,
         override: {
           functions: (originalImplementation) => {
