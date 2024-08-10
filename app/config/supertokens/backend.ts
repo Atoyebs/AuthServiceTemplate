@@ -62,6 +62,7 @@ export let backendConfig = (): TypeInput => {
         },
       }),
       SessionNode.init({
+        cookieSameSite: process.env.NODE_ENV === "production" ? "strict" : "none",
         override: {
           functions: (originalImplementation) => {
             return {
