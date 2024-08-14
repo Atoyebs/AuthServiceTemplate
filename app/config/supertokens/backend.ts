@@ -15,9 +15,9 @@ const cookieSameSite = process.env.NEXT_SERVER_API_DOMAIN!.includes("localhost")
   : "strict";
 const cookieSecure = cookieSameSite === "strict";
 
-console.log(
-  `cookieSameSite (${cookieSameSite}) | cookieSecure (${cookieSecure}) configuration == `
-);
+// console.log(
+//   `cookieSameSite (${cookieSameSite}) | cookieSecure (${cookieSecure}) configuration == `
+// );
 
 export let backendConfig = (): TypeInput => {
   return {

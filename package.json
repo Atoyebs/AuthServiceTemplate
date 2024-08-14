@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "build:image": "./scripts/build_image.sh",
-    "docker:dev": "docker-compose --env-file .env.development -f docker-compose.dev.yml up -d",
-    "prepare": "husky"
+    "docker:dev": "docker-compose --env-file .env.development -f docker-compose.dev.yml up -d"
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -26,13 +25,13 @@
   "devDependencies": {
     "@types/cookie": "^0.5.2",
     "@types/lodash": "^4.17.6",
-    "@types/node": "^20",
+    "@types/node": "20.14.15",
     "@types/ramda": "^0.30.1",
-    "@types/react": "^18",
+    "@types/react": "18.3.3",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
     "husky": "^9.1.4",
-    "typescript": "^5"
+    "typescript": "5.5.4"
   }
 }

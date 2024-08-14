@@ -1,5 +1,5 @@
 # Use the same base image as specified in your docker-compose file
-FROM node:20.16.0-alpine AS build
+FROM node:20.16.0-slim AS build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -32,15 +32,14 @@ RUN npm install
 
 RUN npm run build
 
-RUN ls -ltr
+RUN rm -rf app .env .env.development middleware.ts README.md tsconfig.json Dockerfile .gitignore .eslintrc.json
 
-RUN rm -rf app assets public .env .env.development middleware.ts
-
-FROM node:20.16.0-alpine
+FROM node:20.16.0-alpine AS main
 
 WORKDIR /app
 
 COPY --from=build /app .
+
 
 EXPOSE 3000
 

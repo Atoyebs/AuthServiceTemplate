@@ -3,6 +3,8 @@ import EmailPasswordNode from "supertokens-node/recipe/emailpassword";
 import { UserContext } from "supertokens-node/types";
 import SuperTokens from "supertokens-node";
 
+export type ObjectValues<T> = T[keyof T];
+
 export interface STSignUpPOSTInput {
   formFields: {
     id: string;
