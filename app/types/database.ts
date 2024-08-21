@@ -11,6 +11,7 @@ export interface IUserBasicData {
 export const USER_ROLES = {
   SUPER_ADMIN: "super-admin",
   ADMIN: "admin",
+  BASIC: "basic",
 } as const;
 
 export type UserRoleType = ObjectValues<typeof USER_ROLES>;

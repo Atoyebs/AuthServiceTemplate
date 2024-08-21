@@ -54,7 +54,7 @@ export async function signUpPOST(
   );
 
   if (wasUserSuccessfullyCreated) {
-    await handleSuperAdminRoleAssignment(response.session.getTenantId(), response.user.id);
+    await handleRoleAssignment(response.session.getTenantId(), response.user.id);
 
     await EmailVerification.sendEmailVerificationEmail(
       response.session.getTenantId(),
@@ -68,14 +68,22 @@ export async function signUpPOST(
   return response;
 }
 
-async function handleSuperAdminRoleAssignment(tenantId: string, userId: string) {
+async function handleRoleAssignment(tenantId: string, userId: string) {
   const { roles } = await UserRole.getAllRoles();
-  const hasSuperAdminRole = roles?.includes(USER_ROLES.SUPER_ADMIN);
+  const doesSuperAdminRoleExist = roles?.includes(USER_ROLES.SUPER_ADMIN);
+  const doesBasicRoleExist = roles?.includes(USER_ROLES.BASIC);
 
-  if (!hasSuperAdminRole) {
+  //if the super-admin role doesn't exist, then create it
+  if (!doesSuperAdminRoleExist) {
     await UserRole.createNewRoleOrAddPermissions(USER_ROLES.SUPER_ADMIN, []);
   }
 
+  //if the basic role doesn't exist, then create it
+  if (!doesBasicRoleExist) {
+    await UserRole.createNewRoleOrAddPermissions(USER_ROLES.BASIC, []);
+  }
+
+  //check if there are any users with an existing super-admin role
   const usersWithSuperAdminRole = await UserRole.getUsersThatHaveRole(
     tenantId,
     USER_ROLES.SUPER_ADMIN
@@ -84,8 +92,9 @@ async function handleSuperAdminRoleAssignment(tenantId: string, userId: string) 
   console.log("\n>>existing superAdmins: ", usersWithSuperAdminRole);
 
   //if there are no users with an existing super-admin role, then create a user with the super-admin role
-
   if (resWasSuccessful && usersWithSuperAdminRole?.users?.length === 0) {
-    await UserRole.addRoleToUser(tenantId, userId, USER_ROLES.SUPER_ADMIN);
+    return await UserRole.addRoleToUser(tenantId, userId, USER_ROLES.SUPER_ADMIN);
   }
+
+  return await UserRole.addRoleToUser(tenantId, userId, USER_ROLES.BASIC);
 }
